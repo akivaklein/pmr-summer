@@ -1,0 +1,878 @@
+import React, { useMemo, useState } from 'react';
+
+const cabins = [
+  {
+    name: 'Rosewood Premier Cabins',
+    category: 'Cabins',
+    filter: 'Large groups',
+    sleeps: 'Families or small groups',
+    layout: '4 bedrooms · 4 king beds · 2 bathrooms · loft',
+    features: ['Kitchenette', 'Free WiFi', 'Smart TV', 'Private porch'],
+    description:
+      'Cozy four-bedroom log cabins with warm wood interiors, large windows, porch views, and enough space for everyone to settle in after White Mountains adventures.',
+    cta: 'https://rosewoodpremier.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/PMR-RosewoodVilla17-1400x934.jpg',
+  },
+  {
+    name: 'Rosewood Villa Cabins',
+    category: 'Cabins',
+    filter: 'Families',
+    sleeps: 'Families or small groups',
+    layout: '2 bedrooms · 2 king beds · upstairs loft',
+    features: ['Kitchenette', 'Free WiFi', 'Smart TV', 'Private porch'],
+    description:
+      'Two-bedroom log cabins with a versatile loft, wood interiors, large windows, and a private porch for a relaxed mountain-retreat feel.',
+    cta: 'https://rosewood.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/PMR-RosewoodVilla17-1400x934.jpg',
+  },
+  {
+    name: 'Rosewood Cottage',
+    category: 'Cabins',
+    filter: 'Lakeside',
+    sleeps: 'Families or groups',
+    layout: '2 ground-floor bedrooms · upstairs twin loft',
+    features: [
+      'Full kitchen',
+      'Lake views',
+      'Private porch',
+      'Queen and king beds',
+    ],
+    description:
+      'A spacious lakeside retreat with ground-floor bedrooms, an upstairs loft with twin beds, a full kitchen, and porch views over the lake.',
+    cta: 'https://book.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/RosewoodCottage-4.jpg',
+  },
+  {
+    name: 'Chestnut Premier Cabin',
+    category: 'Cabins',
+    filter: 'Couples',
+    sleeps: '2 adults',
+    layout: 'King bed · lakeside cabin',
+    features: ['Kitchenette', 'Smart TV', 'Free WiFi', 'Private porch'],
+    description:
+      'A romantic lakeside cabin for two with a king bed, lake views, historic charm, and the essentials for a peaceful White Mountains stay.',
+    cta: 'https://book.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/01/GH-PMR-28.jpg',
+  },
+  {
+    name: 'Chestnut Studio Cabins',
+    category: 'Cabins',
+    filter: 'Couples',
+    sleeps: '2 adults',
+    layout: 'King bed · studio cabin',
+    features: ['Kitchenette', 'Smart TV', 'Free WiFi', 'Lake views'],
+    description:
+      'Cozy studio cabins for two with a king bed, lake views, kitchenette, WiFi, and a comfortable private-porch setup.',
+    cta: 'https://chestnutstudio.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/01/GH-PMR-25-1-1400x934.jpg',
+  },
+  {
+    name: 'Pine Cabins',
+    category: 'Cabins',
+    filter: 'Couples',
+    sleeps: '1–2 guests',
+    layout: 'King bed · living area · loft nook',
+    features: ['Kitchenette', 'Forest views', 'Private porch', 'Large windows'],
+    description:
+      'Peaceful cabins for one or two with a king bed, forest views, a living area, kitchenette, porch, and a quiet loft nook.',
+    cta: 'https://pinecabin.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/GH-PMR-33-1-1120x1400.jpg',
+  },
+  {
+    name: 'Oak Premier Cabin',
+    category: 'Cabins',
+    filter: 'Large groups',
+    sleeps: 'Up to 12 guests',
+    layout: '6 bedrooms · loft with futons · rustic living area',
+    features: [
+      'Full kitchen',
+      'Smart TV',
+      'Large-group layout',
+      'Mountain retreat',
+    ],
+    description:
+      'A spacious cabin for family or group stays, with six bedrooms, a loft with futons, a rustic living area, smart TV, and full kitchen.',
+    cta: 'https://book.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/PMR-OakPremiereCabin.jpg',
+  },
+  {
+    name: 'Cedar Select Townhome Cabins',
+    category: 'Townhomes',
+    filter: 'Families',
+    sleeps: '1- and 2-bedroom options',
+    layout: 'Townhome-style cabin options',
+    features: [
+      'Full kitchen',
+      'Comfort-focused',
+      'Flexible layouts',
+      'Good for longer stays',
+    ],
+    description:
+      'One- and two-bedroom Cedar options designed for comfort after exploring, with a fully equipped kitchen for easy meals together.',
+    cta: 'https://cedarselect.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/CedarSelects.jpg',
+  },
+  {
+    name: 'Cedar Suite Cabins',
+    category: 'Townhomes',
+    filter: 'Couples',
+    sleeps: '1 bedroom',
+    layout: 'One-bedroom suite cabin',
+    features: [
+      'Full kitchen',
+      'Comfort-focused',
+      'Simple basecamp',
+      'Extended-stay friendly',
+    ],
+    description:
+      'One-bedroom Cedar Suite cabins with the comfort and kitchen setup guests need after a full day in the White Mountains.',
+    cta: 'https://cedarsuite.presidentialmountainresort.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/02/CedarSelects.jpg',
+  },
+  {
+    name: 'Cherry Lodge Cabins',
+    category: 'Lodge rooms',
+    filter: 'Lodge rooms',
+    sleeps: 'Weekend or extended stays',
+    layout: 'Lodge-style rooms',
+    features: [
+      'Kitchenette',
+      'Mini fridge',
+      'Microwave',
+      'Deck',
+      'Reliable WiFi',
+    ],
+    description:
+      'Lodge-style rooms built for comfort and convenience, with kitchenette basics, a deck, and reliable WiFi for a ready-to-explore basecamp.',
+    cta: 'https://cherrylodge.holidayfuture.com',
+    image:
+      'https://presidentialmountainresort.com/wp-content/uploads/2025/01/PMR-CherryLodge2-1400x934.jpg',
+  },
+];
+
+const filters = [
+  'All',
+  'Couples',
+  'Families',
+  'Large groups',
+  'Lakeside',
+  'Townhomes',
+  'Lodge rooms',
+];
+const categoryFilters = ['All', 'Cabins', 'Townhomes', 'Lodge rooms'];
+const mapLegend = [
+  'Office',
+  'Check-in & Gift Shop',
+  'Coin-Op Laundry',
+  'Swimming Pool (seasonal)',
+  'Cherry Lodge Rooms',
+  'Presidential Hall',
+  'North Playground',
+  'South Playground',
+  'East Playground',
+  'Boat Dock',
+  'North Fire Pit',
+  'South Fire Pit',
+  'Gazebo on the Lake',
+  'Toddler Playhouse',
+  'Viewing Zoo',
+  'Cedar Lodge Rooms',
+];
+
+const mapHotspots = [
+  {
+    label: 'Rosewood Villas',
+    shortLabel: 'RV',
+    cabinName: 'Rosewood Villa Cabins',
+    description:
+      'Focuses the map on the Rosewood Villa area and shows the matching villa cabin information.',
+    x: 41,
+    y: 43,
+    zoomOrigin: '41% 43%',
+  },
+  {
+    label: 'Rosewood Premier',
+    shortLabel: 'RP',
+    cabinName: 'Rosewood Premier Cabins',
+    description: 'Larger Rosewood cabin option for family and group stays.',
+    x: 48,
+    y: 38,
+    zoomOrigin: '48% 38%',
+  },
+  {
+    label: 'Rosewood Cottage',
+    shortLabel: 'RC',
+    cabinName: 'Rosewood Cottage',
+    description:
+      'Lakeside cottage option with porch and lake-view positioning.',
+    x: 58,
+    y: 59,
+    zoomOrigin: '58% 59%',
+  },
+  {
+    label: 'Chestnut Cabins',
+    shortLabel: 'CH',
+    cabinName: 'Chestnut Studio Cabins',
+    description: 'Cozy studio cabin area for couples and lake-focused stays.',
+    x: 63,
+    y: 47,
+    zoomOrigin: '63% 47%',
+  },
+  {
+    label: 'Pine Cabins',
+    shortLabel: 'PN',
+    cabinName: 'Pine Cabins',
+    description: 'Forest-view cabin option for one or two guests.',
+    x: 31,
+    y: 62,
+    zoomOrigin: '31% 62%',
+  },
+  {
+    label: 'Oak Premier',
+    shortLabel: 'OK',
+    cabinName: 'Oak Premier Cabin',
+    description: 'Large group cabin option for up to 12 guests.',
+    x: 24,
+    y: 46,
+    zoomOrigin: '24% 46%',
+  },
+  {
+    label: 'Cedar Lodge / Townhomes',
+    shortLabel: 'CD',
+    cabinName: 'Cedar Select Townhome Cabins',
+    description: 'Cedar lodging area with suite and townhome-style options.',
+    x: 72,
+    y: 35,
+    zoomOrigin: '72% 35%',
+  },
+  {
+    label: 'Cherry Lodge',
+    shortLabel: 'CL',
+    cabinName: 'Cherry Lodge Cabins',
+    description: 'Lodge-style room area with kitchenette conveniences.',
+    x: 18,
+    y: 27,
+    zoomOrigin: '18% 27%',
+  },
+];
+
+function runDataTests() {
+  if (typeof console === 'undefined') return;
+
+  console.assert(Array.isArray(cabins), 'cabins should be an array');
+  console.assert(
+    cabins.length === 10,
+    'cabins should match the 10 cabin sections currently shown on the PMR cabins page'
+  );
+  console.assert(filters.includes('All'), 'filters should include All');
+  console.assert(
+    categoryFilters.includes('Cabins'),
+    'category filters should include Cabins'
+  );
+  console.assert(
+    cabins.every((cabin) => cabin.name && cabin.category && cabin.cta),
+    'every cabin needs name, category, and cta'
+  );
+  console.assert(
+    cabins.every((cabin) => filters.includes(cabin.filter)),
+    'every cabin filter should exist in filters'
+  );
+  console.assert(
+    cabins.every((cabin) => categoryFilters.includes(cabin.category)),
+    'every category should exist in categoryFilters'
+  );
+  console.assert(
+    cabins.every((cabin) =>
+      cabin.image.includes('presidentialmountainresort.com/wp-content/uploads')
+    ),
+    'all cabin images should use PMR website images, not placeholder stock photos'
+  );
+  console.assert(
+    cabins.some(
+      (cabin) =>
+        cabin.name === 'Oak Premier Cabin' && cabin.sleeps.includes('12')
+    ),
+    'Oak Premier should remain listed as up to 12 guests'
+  );
+  console.assert(
+    cabins.some(
+      (cabin) =>
+        cabin.name === 'Rosewood Cottage' &&
+        cabin.features.includes('Lake views')
+    ),
+    'Rosewood Cottage should keep lake-view positioning'
+  );
+  console.assert(
+    mapHotspots.length >= 6,
+    'interactive map should include multiple clickable resort areas'
+  );
+  console.assert(
+    mapHotspots.every((spot) =>
+      cabins.some((cabin) => cabin.name === spot.cabinName)
+    ),
+    'every map hotspot should connect to a real cabin card'
+  );
+  console.assert(
+    mapHotspots.every(
+      (spot) => spot.x >= 0 && spot.x <= 100 && spot.y >= 0 && spot.y <= 100
+    ),
+    'map hotspot positions should use percentage coordinates'
+  );
+  console.assert(
+    mapHotspots.every((spot) => spot.shortLabel && spot.shortLabel.length <= 2),
+    'map pins should use tiny two-letter labels so they do not block the map'
+  );
+}
+
+runDataTests();
+
+function Button({ children, className = '', variant = 'solid', ...props }) {
+  const base =
+    'inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-bold transition focus:outline-none focus:ring-4 focus:ring-emerald-900/20';
+  const variants = {
+    solid: 'bg-emerald-900 text-white hover:bg-emerald-800',
+    dark: 'bg-stone-950 text-white hover:bg-stone-800',
+    light: 'bg-white text-emerald-950 hover:bg-emerald-50',
+    outline:
+      'border border-stone-300 bg-white/75 text-stone-950 hover:bg-white',
+  };
+
+  return (
+    <button
+      className={`${base} ${variants[variant] || variants.solid} ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Badge({ children, className = '' }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Amenity({ icon, title, body }) {
+  return (
+    <div className="flex gap-3 rounded-2xl bg-white/75 p-4 shadow-sm ring-1 ring-stone-200 backdrop-blur">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-900 text-lg text-white">
+        {icon}
+      </div>
+      <div>
+        <p className="font-semibold text-stone-950">{title}</p>
+        <p className="text-sm leading-6 text-stone-600">{body}</p>
+      </div>
+    </div>
+  );
+}
+
+function CabinCard({ cabin }) {
+  return (
+    <article className="group overflow-hidden rounded-[2rem] border border-stone-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+      <div
+        className="relative h-64 bg-cover bg-center"
+        style={{
+          backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.04), rgba(0,0,0,0.54)), url('${cabin.image}')`,
+        }}
+      >
+        <div className="absolute left-4 top-4 flex flex-wrap gap-2">
+          <Badge className="bg-white/92 text-emerald-950 shadow-sm backdrop-blur">
+            {cabin.category}
+          </Badge>
+          <Badge className="bg-black/45 text-white backdrop-blur">
+            {cabin.filter}
+          </Badge>
+        </div>
+        <div className="absolute bottom-4 left-4 right-4">
+          <h3 className="text-2xl font-black tracking-tight text-white drop-shadow">
+            {cabin.name}
+          </h3>
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div className="flex flex-wrap gap-2">
+          {cabin.features.slice(0, 4).map((feature) => (
+            <Badge
+              key={feature}
+              className="bg-emerald-50 text-emerald-950 ring-1 ring-emerald-900/10"
+            >
+              {feature}
+            </Badge>
+          ))}
+        </div>
+
+        <div className="mt-5 space-y-3 text-sm text-stone-700">
+          <p>
+            <span className="font-bold text-stone-950">Best for:</span>{' '}
+            {cabin.sleeps}
+          </p>
+          <p>
+            <span className="font-bold text-stone-950">Layout:</span>{' '}
+            {cabin.layout}
+          </p>
+        </div>
+
+        <p className="mt-4 min-h-24 text-sm leading-6 text-stone-600">
+          {cabin.description}
+        </p>
+
+        <a
+          href={cabin.cta}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-6 block"
+        >
+          <span className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-800">
+            See Availability <span className="ml-2">›</span>
+          </span>
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function InteractiveMap({ selectedSpot, onSelectSpot }) {
+  const selectedCabin =
+    cabins.find((cabin) => cabin.name === selectedSpot.cabinName) || cabins[0];
+
+  return (
+    <div className="grid gap-6 p-4 md:grid-cols-[260px_1fr_340px] md:p-6">
+      <aside className="rounded-[1.5rem] bg-white/10 p-3 ring-1 ring-white/15">
+        <div className="mb-3 px-2">
+          <p className="text-[10px] font-bold uppercase tracking-[.22em] text-emerald-200">
+            Choose cabin area
+          </p>
+          <p className="mt-1 text-sm text-emerald-50/75">
+            Click a name to locate it on the map.
+          </p>
+        </div>
+        <div className="max-h-[560px] space-y-2 overflow-auto pr-1">
+          {mapHotspots.map((spot) => {
+            const isSelected = spot.label === selectedSpot.label;
+            const cabin = cabins.find((item) => item.name === spot.cabinName);
+
+            return (
+              <button
+                key={spot.label}
+                type="button"
+                onClick={() => onSelectSpot(spot)}
+                className={`w-full rounded-2xl p-3 text-left transition ${
+                  isSelected
+                    ? 'bg-white text-stone-950 shadow-lg'
+                    : 'bg-white/8 text-white hover:bg-white/15'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-[10px] font-black ${
+                      isSelected
+                        ? 'bg-amber-300 text-stone-950'
+                        : 'bg-emerald-800 text-white'
+                    }`}
+                  >
+                    {spot.shortLabel}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-black leading-tight">
+                      {spot.label}
+                    </span>
+                    <span
+                      className={`mt-1 block text-[11px] leading-tight ${
+                        isSelected ? 'text-stone-600' : 'text-emerald-50/65'
+                      }`}
+                    >
+                      {cabin?.layout}
+                    </span>
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </aside>
+
+      <div>
+        <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <p className="font-semibold uppercase tracking-[.24em] text-emerald-200">
+              Clickable resort map
+            </p>
+            <h2 className="mt-2 text-3xl font-black tracking-tight md:text-4xl">
+              Pick a cabin. See where it is.
+            </h2>
+          </div>
+          <Button
+            className="px-4 py-2 text-xs"
+            variant="light"
+            onClick={() => onSelectSpot(mapHotspots[0])}
+          >
+            Reset
+          </Button>
+        </div>
+
+        <div className="relative overflow-hidden rounded-[2rem] bg-emerald-900 ring-1 ring-white/15">
+          <div className="relative aspect-[16/10] overflow-hidden">
+            <img
+              src="https://presidentialmountainresort.com/wp-content/uploads/2025/10/PMR-Map-1920.jpg"
+              alt="Presidential Mountain Resort illustrated property map"
+              className="h-full w-full object-cover transition duration-700 ease-out"
+              style={{
+                transform: 'scale(1.72)',
+                transformOrigin: selectedSpot.zoomOrigin,
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/5" />
+
+            {mapHotspots.map((spot) => {
+              const isSelected = spot.label === selectedSpot.label;
+              return (
+                <button
+                  key={spot.label}
+                  type="button"
+                  onClick={() => onSelectSpot(spot)}
+                  className={`absolute z-10 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border text-[9px] font-black shadow-lg transition hover:scale-125 ${
+                    isSelected
+                      ? 'border-white bg-amber-300 text-stone-950 ring-4 ring-amber-300/30'
+                      : 'border-white/70 bg-emerald-950/75 text-white backdrop-blur'
+                  }`}
+                  style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
+                  aria-label={`Show ${spot.label}`}
+                  title={spot.label}
+                >
+                  {spot.shortLabel}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <p className="mt-3 text-xs leading-5 text-emerald-50/70">
+          Marker positions are a visual mockup. A developer can fine-tune the
+          exact x/y values against the final live map image.
+        </p>
+      </div>
+
+      <aside className="rounded-[1.5rem] bg-white p-4 text-stone-950 shadow-xl">
+        <div className="overflow-hidden rounded-[1.25rem]">
+          <img
+            src={selectedCabin.image}
+            alt={selectedCabin.name}
+            className="h-40 w-full object-cover"
+          />
+        </div>
+        <Badge className="mt-4 bg-emerald-50 text-emerald-950 ring-1 ring-emerald-900/10">
+          {selectedSpot.shortLabel} · {selectedSpot.label}
+        </Badge>
+        <h3 className="mt-3 text-2xl font-black tracking-tight">
+          {selectedCabin.name}
+        </h3>
+        <p className="mt-2 text-xs leading-5 text-stone-600">
+          {selectedSpot.description}
+        </p>
+        <div className="mt-4 space-y-2 text-xs text-stone-700">
+          <p>
+            <span className="font-bold text-stone-950">Best for:</span>{' '}
+            {selectedCabin.sleeps}
+          </p>
+          <p>
+            <span className="font-bold text-stone-950">Layout:</span>{' '}
+            {selectedCabin.layout}
+          </p>
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {selectedCabin.features.map((feature) => (
+            <Badge
+              key={feature}
+              className="bg-stone-100 px-2 py-1 text-[10px] text-stone-800"
+            >
+              {feature}
+            </Badge>
+          ))}
+        </div>
+        <a
+          href={selectedCabin.cta}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-5 block"
+        >
+          <span className="inline-flex w-full items-center justify-center rounded-full bg-emerald-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-800">
+            See Availability
+          </span>
+        </a>
+      </aside>
+    </div>
+  );
+}
+
+export default function PMRCabinsRedesign() {
+  const [query, setQuery] = useState('');
+  const [tripFilter, setTripFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [selectedSpot, setSelectedSpot] = useState(mapHotspots[0]);
+
+  const filteredCabins = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return cabins.filter((cabin) => {
+      const matchesTrip = tripFilter === 'All' || cabin.filter === tripFilter;
+      const matchesCategory =
+        categoryFilter === 'All' || cabin.category === categoryFilter;
+      const haystack = `${cabin.name} ${cabin.category} ${cabin.filter} ${
+        cabin.sleeps
+      } ${cabin.layout} ${cabin.description} ${cabin.features.join(
+        ' '
+      )}`.toLowerCase();
+      return (
+        matchesTrip &&
+        matchesCategory &&
+        (!normalizedQuery || haystack.includes(normalizedQuery))
+      );
+    });
+  }, [query, tripFilter, categoryFilter]);
+
+  const resetFilters = () => {
+    setQuery('');
+    setTripFilter('All');
+    setCategoryFilter('All');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#f6f1e8] text-stone-950">
+      <header className="sticky top-0 z-40 border-b border-stone-200 bg-[#f6f1e8]/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-950 text-lg font-black text-white">
+              PMR
+            </div>
+            <div>
+              <p className="font-bold leading-4">
+                Presidential Mountain Resort
+              </p>
+              <p className="text-xs text-stone-500">Bethlehem, New Hampshire</p>
+            </div>
+          </div>
+          <nav className="hidden items-center gap-7 text-sm font-medium text-stone-700 md:flex">
+            <a href="#cabins" className="hover:text-emerald-900">
+              Cabins
+            </a>
+            <a href="#amenities" className="hover:text-emerald-900">
+              Amenities
+            </a>
+            <a href="#map" className="hover:text-emerald-900">
+              Resort map
+            </a>
+          </nav>
+          <a
+            href="https://book.presidentialmountainresort.com"
+            target="_blank"
+            rel="noreferrer"
+            className="hidden sm:block"
+          >
+            <Button variant="dark">Book Now</Button>
+          </a>
+        </div>
+      </header>
+
+      <main>
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(22,101,52,.25),transparent_30%),radial-gradient(circle_at_80%_5%,rgba(120,53,15,.2),transparent_25%)]" />
+          <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 md:grid-cols-[1.04fr_.96fr] md:py-24">
+            <div className="relative z-10">
+              <Badge className="mb-5 bg-white px-4 py-2 text-emerald-950 shadow-sm">
+                White Mountains cabin rentals
+              </Badge>
+              <h1 className="max-w-3xl text-5xl font-black tracking-tight md:text-7xl">
+                Cabins at Presidential Mountain Resort
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-stone-700">
+                Explore PMR’s real cabin collection, from cozy studios to
+                spacious six-bedroom retreats. The redesign keeps the actual
+                cabin types intact and simply makes comparing them easier.
+              </p>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="https://book.presidentialmountainresort.com"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Button>Check Availability</Button>
+                </a>
+                <a href="#cabins">
+                  <Button variant="outline">Compare Cabins</Button>
+                </a>
+              </div>
+              <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
+                <div className="rounded-2xl bg-white/70 p-4 shadow-sm ring-1 ring-stone-200">
+                  <p className="text-2xl font-black">37</p>
+                  <p className="text-xs text-stone-600">unique log cabins</p>
+                </div>
+                <div className="rounded-2xl bg-white/70 p-4 shadow-sm ring-1 ring-stone-200">
+                  <p className="text-2xl font-black">Studio–6BR</p>
+                  <p className="text-xs text-stone-600">real PMR range</p>
+                </div>
+                <div className="rounded-2xl bg-white/70 p-4 shadow-sm ring-1 ring-stone-200">
+                  <p className="text-2xl font-black">Year-round</p>
+                  <p className="text-xs text-stone-600">White Mountains stay</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative z-10">
+              <div
+                className="relative h-[560px] overflow-hidden rounded-[2.5rem] bg-cover bg-center shadow-2xl"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.5)), url('https://presidentialmountainresort.com/wp-content/uploads/2025/02/GH-PMR-33-1-1120x1400.jpg')",
+                }}
+              >
+                <div className="absolute bottom-6 left-6 right-6 rounded-[2rem] bg-white/88 p-5 shadow-xl backdrop-blur">
+                  <p className="text-sm font-bold uppercase tracking-[.18em] text-emerald-900">
+                    Actual PMR cabins
+                  </p>
+                  <p className="mt-2 text-lg font-bold">
+                    No invented cabin products, no stock-photo fantasy village,
+                    just the real PMR cabin lineup presented with a cleaner
+                    booking flow.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="amenities" className="mx-auto max-w-7xl px-5 py-10">
+          <div className="grid gap-4 md:grid-cols-4">
+            <Amenity
+              icon="📶"
+              title="High-speed WiFi"
+              body="Many cabins include WiFi for connected stays."
+            />
+            <Amenity
+              icon="🍳"
+              title="Kitchen options"
+              body="Select cabins include kitchenettes or fully equipped kitchens."
+            />
+            <Amenity
+              icon="🌊"
+              title="Lake & porch moments"
+              body="Some cabin types feature lake views and private porch spaces."
+            />
+            <Amenity
+              icon="🔥"
+              title="Resort amenities"
+              body="Fire pits, playgrounds, seasonal pool, dock, gazebo, and more around the property."
+            />
+          </div>
+        </section>
+        <section id="cabins" className="mx-auto max-w-7xl px-5 py-14">
+          <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div>
+              <p className="font-semibold uppercase tracking-[.24em] text-emerald-900">
+                Real PMR cabin options
+              </p>
+              <h2 className="mt-2 text-4xl font-black tracking-tight md:text-5xl">
+                Compare without changing the cabins
+              </h2>
+              <p className="mt-3 max-w-2xl text-stone-600">
+                The cards use the cabin sections, availability links, and
+                lodging facts shown on the PMR cabins page. The redesign
+                improves sorting and clarity without changing what exists in
+                real life.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3 md:w-[760px]">
+              <label className="relative block sm:col-span-3 md:col-span-1">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400">
+                  🔎
+                </span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search king, lake, kitchen..."
+                  className="h-12 w-full rounded-full border border-stone-300 bg-white pl-11 pr-4 text-sm outline-none transition focus:border-emerald-900 focus:ring-4 focus:ring-emerald-900/10"
+                />
+              </label>
+              <select
+                value={tripFilter}
+                onChange={(event) => setTripFilter(event.target.value)}
+                className="h-12 rounded-full border border-stone-300 bg-white px-4 text-sm font-semibold outline-none transition focus:border-emerald-900 focus:ring-4 focus:ring-emerald-900/10"
+              >
+                {filters.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={categoryFilter}
+                onChange={(event) => setCategoryFilter(event.target.value)}
+                className="h-12 rounded-full border border-stone-300 bg-white px-4 text-sm font-semibold outline-none transition focus:border-emerald-900 focus:ring-4 focus:ring-emerald-900/10"
+              >
+                {categoryFilters.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {filteredCabins.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredCabins.map((cabin) => (
+                <CabinCard key={cabin.name} cabin={cabin} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white/60 p-10 text-center">
+              <p className="text-2xl font-black">No cabins found</p>
+              <p className="mt-2 text-stone-600">
+                Try a different search term or reset the filters.
+              </p>
+              <Button className="mt-5" onClick={resetFilters}>
+                Reset filters
+              </Button>
+            </div>
+          )}
+        </section>
+        <section id="map" className="mx-auto max-w-7xl px-5 py-14">
+          <div className="overflow-hidden rounded-[2.5rem] bg-emerald-950 text-white">
+            <InteractiveMap
+              selectedSpot={selectedSpot}
+              onSelectSpot={setSelectedSpot}
+            />
+            <div className="border-t border-white/10 p-6 md:p-10">
+              <p className="font-semibold uppercase tracking-[.24em] text-emerald-200">
+                PMR Map Legend
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+                {mapLegend.map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15"
+                  >
+                    <p className="font-semibold">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+                }
