@@ -1,10 +1,10 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 
 // Using images.weserv.nl proxy for PMR website photos (bypasses hotlink block)
-const P = (path) => `https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/${path}`;
+const P = (path: string) => `https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/${path}`;
 
 // TripAdvisor CDN photos (no hotlink block)
-const TA = (id) => `https://dynamic-media-cdn.tripadvisor.com/media/photo-o/${id}/caption.jpg?w=900&h=600&s=1`;
+const TA = (id: string) => `https://dynamic-media-cdn.tripadvisor.com/media/photo-o/${id}/caption.jpg?w=900&h=600&s=1`;
 
 const FALLBACK = TA("1a/86/80/3c");
 
@@ -232,7 +232,7 @@ const mapLegend = [
   "Gazebo on the Lake","Toddler Playhouse","Viewing Zoo","Rosewood Villa Cabins (16 & 17)",
 ];
 
-function useInView(threshold = 0.08) {
+function useInView(threshold: number = 0.08) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -243,14 +243,14 @@ function useInView(threshold = 0.08) {
   return [ref, inView];
 }
 
-function Img({ src, alt, style, onMouseEnter, onMouseLeave }) {
+function Img({ src, alt, style, onMouseEnter, onMouseLeave }: { src:string; alt:string; style?:any; onMouseEnter?:any; onMouseLeave?:any }) {
   const [imgSrc, setImgSrc] = useState(src);
   useEffect(() => setImgSrc(src), [src]);
   return <img src={imgSrc} alt={alt} onError={() => setImgSrc(FALLBACK)} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} />;
 }
 
 // Lightbox gallery modal - arrows only, no thumbnails
-function Gallery({ cabin, onClose }) {
+function Gallery({ cabin, onClose }: { cabin:any; onClose:()=>void }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const fn = (e) => { if (e.key === "Escape") onClose(); if (e.key === "ArrowRight") setIdx(i => (i+1) % cabin.gallery.length); if (e.key === "ArrowLeft") setIdx(i => (i-1+cabin.gallery.length) % cabin.gallery.length); };
@@ -280,7 +280,7 @@ function Gallery({ cabin, onClose }) {
   );
 }
 
-function CabinCard({ cabin, index, onOpenGallery }) {
+function CabinCard({ cabin, index, onOpenGallery }: { cabin:any; index:number; onOpenGallery:(c:any)=>void }) {
   const [ref, inView] = useInView();
   const [hovered, setHovered] = useState(false);
   return (
@@ -332,7 +332,7 @@ function CabinCard({ cabin, index, onOpenGallery }) {
   );
 }
 
-function MapSection() {
+function MapSection(): JSX.Element {
   const [selectedSpot, setSelectedSpot] = useState(mapHotspots[0]);
   const [fading, setFading] = useState(false);
 
@@ -371,7 +371,7 @@ function MapSection() {
               <img src="https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/2025/10/PMR-Map-1920.jpg" alt="PMR Resort Map"
                 style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
               />
-              {mapHotspots.map(spot => {
+              {mapHotspots.map((spot: any) => {
                 const isSel = spot.label === selectedSpot.label;
                 const isAmenity = spot.type === "amenity";
                 const isPool = spot.label === "Swimming Pool";
@@ -401,7 +401,7 @@ function MapSection() {
         {/* Cabin + amenity list */}
         <div style={{ display:"flex", flexWrap:"wrap", gap:8, alignContent:"flex-start" }}>
           <p style={{ width:"100%", fontSize:10, fontWeight:700, color:"#7dcfa0", letterSpacing:"0.15em", textTransform:"uppercase", margin:"0 0 4px" }}>Cabins</p>
-          {mapHotspots.filter(s=>s.type==="cabin").map(spot => {
+          {mapHotspots.filter((s:any)=>s.type==="cabin").map((spot: any) => {
             const isSel = spot.label === selectedSpot.label;
             const cabin = cabins.find(c => c.name === spot.cabinName);
             return (
@@ -423,7 +423,7 @@ function MapSection() {
             );
           })}
           <p style={{ width:"100%", fontSize:10, fontWeight:700, color:"#7dcfa0", letterSpacing:"0.15em", textTransform:"uppercase", margin:"12px 0 4px" }}>Amenities</p>
-          {mapHotspots.filter(s=>s.type==="amenity").map(spot => {
+          {mapHotspots.filter((s:any)=>s.type==="amenity").map((spot: any) => {
             const isSel = spot.label === selectedSpot.label;
             return (
               <button key={spot.label} onClick={() => handleSelect(spot)} style={{
@@ -495,7 +495,7 @@ function MapSection() {
   );
 }
 
-function FaqCard({ category, icon, items }) {
+function FaqCard({ category, icon, items }: { category:string; icon:string; items:{q:string;a:string}[] }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
     <div style={{ background:"#fff", borderRadius:"1.5rem", border:"1px solid #ddeedd", overflow:"hidden" }}>
@@ -523,6 +523,111 @@ function FaqCard({ category, icon, items }) {
         ))}
       </div>
     </div>
+  );
+}
+
+const CARD_PHOTOS = [
+  "/giftshop2.jpg",
+  "/boats.jpg",
+  "/bridge.jpg",
+  "/playground.jpg",
+  "/zoo.jpg",
+  "/shul.jpg",
+  "/shul2.jpg",
+  "/pboats.jpg",
+  "/giftshop.jpg",
+];
+
+function HeroCard() {
+  const [idx, setIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFade(false);
+      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 500);
+    }, 3000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div style={{ borderRadius:"2rem", overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.38)" }}>
+      <div style={{ position:"relative", height:320, background:"#b8ccb0" }}>
+        <img src={CARD_PHOTOS[idx]} alt="PMR Resort"
+          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 0.5s ease" }} />
+      </div>
+      <div style={{ background:"rgba(255,255,255,0.97)", padding:"18px 20px" }}>
+        <p style={{ margin:"0 0 4px", fontSize:10, fontWeight:700, color:"#1b4d2e", letterSpacing:"0.14em", textTransform:"uppercase" }}>On-site summer essentials</p>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:8 }}>
+          {["Shul on premises","Mikvah","Heimish food","Lake activities"].map((tag: string) => (
+            <span key={tag} style={{ background:"#e8f5e9", color:"#1b5e20", fontSize:12, fontWeight:700, padding:"4px 12px", borderRadius:20, border:"1px solid rgba(27,94,32,0.18)" }}>{tag}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+const HERO_PHOTOS = [
+  "/giftshop2.jpg",
+  P("2025/02/PMR-RosewoodVilla17-1400x934.jpg"),
+  "/boats.jpg",
+  P("2025/02/GH-PMR-33-1-1120x1400.jpg"),
+  "/bridge.jpg",
+  P("2025/02/PMR-OakPremiereCabin.jpg"),
+];
+
+function HeroSection({ heroVisible }: { heroVisible: boolean }) {
+  const [heroIdx, setHeroIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFade(false);
+      setTimeout(() => { setHeroIdx(i => (i+1) % HERO_PHOTOS.length); setFade(true); }, 600);
+    }, 4000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <section style={{ position:"relative", overflow:"hidden", minHeight:580, display:"flex", alignItems:"center" }}>
+      <div style={{ position:"absolute", inset:0 }}>
+        <img src={HERO_PHOTOS[heroIdx]} alt="Presidential Mountain Resort"
+          style={{ width:"100%", height:"100%", objectFit:"cover", opacity: fade?1:0, transition:"opacity 0.6s ease" }} />
+        <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(8,35,15,0.82) 0%,rgba(8,35,15,0.4) 55%,rgba(8,35,15,0.15) 100%)" }} />
+        <div style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", display:"flex", gap:6 }}>
+          {HERO_PHOTOS.map((_: string, i: number) => (
+            <button key={i} onClick={() => { setFade(false); setTimeout(() => { setHeroIdx(i); setFade(true); }, 300); }}
+              style={{ width: i===heroIdx?20:8, height:8, borderRadius:4, background: i===heroIdx?"#fff":"rgba(255,255,255,0.4)", border:"none", cursor:"pointer", transition:"all 0.3s ease", padding:0 }} />
+          ))}
+        </div>
+      </div>
+      <div style={{ position:"relative", maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 420px", gap:48, alignItems:"center", padding:"80px 24px 72px", width:"100%" }}>
+        <div style={{ opacity:heroVisible?1:0, transform:heroVisible?"none":"translateY(20px)", transition:"all 0.7s ease" }}>
+          <div style={{ display:"flex", gap:10, marginBottom:22, flexWrap:"wrap" }}>
+            <span style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, border:"1px solid rgba(255,255,255,0.2)" }}>🌿 Summer Family Cabin Guide</span>
+            <span style={{ background:"rgba(200,168,32,0.25)", backdropFilter:"blur(8px)", color:"#f5e090", fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, border:"1px solid rgba(200,168,32,0.3)" }}>🕍 Shul · Mikvah · Heimish Food</span>
+          </div>
+          <h1 style={{ margin:"0 0 18px", color:"#fff", fontSize:"clamp(2.2rem,4.5vw,3.6rem)", fontWeight:900, letterSpacing:"-0.03em", lineHeight:1.05 }}>
+            Plan your PMR<br />summer stay with<br /><span style={{ color:"#a8e890" }}>confidence.</span>
+          </h1>
+          <p style={{ margin:"0 0 28px", fontSize:16, lineHeight:1.8, color:"rgba(255,255,255,0.88)", maxWidth:480 }}>
+            Explore cabins by family size, see the resort map, view Shul and Mikvah info, check what's included, and call PMR to reserve the cabin that fits your family.
+          </p>
+          <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
+            <a href="#cabins" style={{ background:"#1b4d2e", color:"#d4e8a0", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", boxShadow:"0 4px 20px rgba(0,0,0,0.25)" }}>Find a Cabin</a>
+            <a href="#map" style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", border:"1px solid rgba(255,255,255,0.28)" }}>Explore Map</a>
+            <a href="#shul" style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", border:"1px solid rgba(255,255,255,0.28)" }}>Shul & Mikvah</a>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginTop:32, maxWidth:400 }}>
+            {[["37","log cabins"],["Heimish","food available"],["Shul","on premises"]].map(([n,l])=>(
+              <div key={l} style={{ background:"rgba(255,255,255,0.12)", backdropFilter:"blur(8px)", borderRadius:14, padding:"13px 14px", border:"1px solid rgba(255,255,255,0.17)" }}>
+                <p style={{ margin:"0 0 2px", fontSize:19, fontWeight:900, color:"#fff" }}>{n}</p>
+                <p style={{ margin:0, fontSize:11, color:"rgba(255,255,255,0.7)" }}>{l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ opacity:heroVisible?1:0, transform:heroVisible?"none":"translateY(24px) scale(0.97)", transition:"all 0.85s ease 0.2s" }}>
+          <HeroCard />
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -572,56 +677,8 @@ export default function PMRCabinsRedesign() {
       </header>
 
       <main>
-        {/* Hero */}
-        <section style={{ position:"relative", overflow:"hidden", minHeight:580, display:"flex", alignItems:"center" }}>
-          <div style={{ position:"absolute", inset:0 }}>
-            <Img src={P("2025/04/GH-PMR-39-2-1400x933.jpg")} alt="Presidential Mountain Resort summer" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-            <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(8,35,15,0.82) 0%,rgba(8,35,15,0.4) 55%,rgba(8,35,15,0.15) 100%)" }} />
-          </div>
-          <div style={{ position:"relative", maxWidth:1200, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 420px", gap:48, alignItems:"center", padding:"80px 24px 72px", width:"100%" }}>
-            <div style={{ opacity:heroVisible?1:0, transform:heroVisible?"none":"translateY(20px)", transition:"all 0.7s ease" }}>
-              <div style={{ display:"flex", gap:10, marginBottom:22, flexWrap:"wrap" }}>
-                <span style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, border:"1px solid rgba(255,255,255,0.2)" }}>🌿 Summer Family Cabin Guide</span>
-                <span style={{ background:"rgba(200,168,32,0.25)", backdropFilter:"blur(8px)", color:"#f5e090", fontSize:12, fontWeight:700, padding:"5px 14px", borderRadius:20, border:"1px solid rgba(200,168,32,0.3)" }}>🕍 Shul · Mikvah · Heimish Food</span>
-              </div>
-              <h1 style={{ margin:"0 0 18px", color:"#fff", fontSize:"clamp(2.2rem,4.5vw,3.6rem)", fontWeight:900, letterSpacing:"-0.03em", lineHeight:1.05 }}>
-                Plan your PMR<br />summer stay with<br /><span style={{ color:"#a8e890" }}>confidence.</span>
-              </h1>
-              <p style={{ margin:"0 0 28px", fontSize:16, lineHeight:1.8, color:"rgba(255,255,255,0.88)", maxWidth:480 }}>
-                Explore cabins by family size, see the resort map, view Shul and Mikvah info, check what's included, and call PMR to reserve the cabin that fits your family.
-              </p>
-              <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
-                <a href="#cabins" style={{ background:"#1b4d2e", color:"#d4e8a0", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", boxShadow:"0 4px 20px rgba(0,0,0,0.25)" }}>Find a Cabin</a>
-                <a href="#map" style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", border:"1px solid rgba(255,255,255,0.28)" }}>Explore Map</a>
-                <a href="#shul" style={{ background:"rgba(255,255,255,0.15)", backdropFilter:"blur(8px)", color:"#fff", borderRadius:30, padding:"13px 28px", fontSize:15, fontWeight:700, textDecoration:"none", border:"1px solid rgba(255,255,255,0.28)" }}>Shul & Mikvah</a>
-              </div>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginTop:32, maxWidth:400 }}>
-                {[["37","log cabins"],["Heimish","food available"],["Shul","on premises"]].map(([n,l])=>(
-                  <div key={l} style={{ background:"rgba(255,255,255,0.12)", backdropFilter:"blur(8px)", borderRadius:14, padding:"13px 14px", border:"1px solid rgba(255,255,255,0.17)" }}>
-                    <p style={{ margin:"0 0 2px", fontSize:19, fontWeight:900, color:"#fff" }}>{n}</p>
-                    <p style={{ margin:0, fontSize:11, color:"rgba(255,255,255,0.7)" }}>{l}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* Hero card */}
-            <div style={{ opacity:heroVisible?1:0, transform:heroVisible?"none":"translateY(24px) scale(0.97)", transition:"all 0.85s ease 0.2s" }}>
-              <div style={{ borderRadius:"2rem", overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.38)" }}>
-                <div style={{ position:"relative", height:320, background:"#b8ccb0" }}>
-                  <Img src={P("2025/02/PMR-RosewoodVilla17-1400x934.jpg")} alt="PMR Cabin" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
-                </div>
-                <div style={{ background:"rgba(255,255,255,0.97)", padding:"18px 20px" }}>
-                  <p style={{ margin:"0 0 4px", fontSize:10, fontWeight:700, color:"#1b4d2e", letterSpacing:"0.14em", textTransform:"uppercase" }}>On-site summer essentials</p>
-                  <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:8 }}>
-                    {["Shul on premises","Mikvah","Heimish food","Lake activities"].map(tag => (
-                      <span key={tag} style={{ background:"#e8f5e9", color:"#1b5e20", fontSize:12, fontWeight:700, padding:"4px 12px", borderRadius:20, border:"1px solid rgba(27,94,32,0.18)" }}>{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero with auto-cycling background */}
+        <HeroSection heroVisible={heroVisible} />
 
         {/* Cabin finder */}
         <section style={{ maxWidth:1200, margin:"0 auto", padding:"40px 24px 0" }}>
@@ -662,7 +719,7 @@ export default function PMRCabinsRedesign() {
               <p style={{ margin:"0 0 8px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", color:"#1b4d2e", textTransform:"uppercase" }}>Everything you need</p>
               <h2 style={{ margin:"0 0 20px", fontSize:"clamp(1.6rem,2.5vw,2.1rem)", fontWeight:900, letterSpacing:"-0.03em", lineHeight:1.1 }}>Everything your family needs for a great vacation</h2>
               <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-                {kosherInfo.map(({ icon, title, body }) => (
+                {kosherInfo.map(({ icon, title, body }: { icon:string; title:string; body:string }) => (
                   <div key={title} style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
                     <div style={{ width:38, height:38, borderRadius:11, background:"#1b4d2e", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{icon}</div>
                     <div>
@@ -776,7 +833,7 @@ export default function PMRCabinsRedesign() {
                   { q:"Grill rental", a:"$35/night. All activities subject to availability." },
                 ]
               },
-            ].map(({ category, icon, items }) => (
+            ].map(({ category, icon, items }: { category:string; icon:string; items:{q:string;a:string}[] }) => (
               <FaqCard key={category} category={category} icon={icon} items={items} />
             ))}
           </div>
