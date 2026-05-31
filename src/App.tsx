@@ -1,10 +1,10 @@
 import { useMemo, useState, useEffect, useRef } from "react";
 
 // Using images.weserv.nl proxy for PMR website photos (bypasses hotlink block)
-const P = (path) => `https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/${path}`;
+const P = (path: string) => `https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/${path}`;
 
 // TripAdvisor CDN photos (no hotlink block)
-const TA = (id) => `https://dynamic-media-cdn.tripadvisor.com/media/photo-o/${id}/caption.jpg?w=900&h=600&s=1`;
+const TA = (id: string) => `https://dynamic-media-cdn.tripadvisor.com/media/photo-o/${id}/caption.jpg?w=900&h=600&s=1`;
 
 const FALLBACK = TA("1a/86/80/3c");
 
@@ -232,7 +232,7 @@ const mapLegend = [
   "Gazebo on the Lake","Toddler Playhouse","Viewing Zoo","Rosewood Villa Cabins (16 & 17)",
 ];
 
-function useInView(threshold = 0.08) {
+function useInView(threshold: number = 0.08) {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
@@ -243,14 +243,14 @@ function useInView(threshold = 0.08) {
   return [ref, inView];
 }
 
-function Img({ src, alt, style, onMouseEnter, onMouseLeave }) {
+function Img({ src, alt, style, onMouseEnter, onMouseLeave }: { src:string; alt:string; style?:any; onMouseEnter?:any; onMouseLeave?:any }) {
   const [imgSrc, setImgSrc] = useState(src);
   useEffect(() => setImgSrc(src), [src]);
   return <img src={imgSrc} alt={alt} onError={() => setImgSrc(FALLBACK)} style={style} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} />;
 }
 
 // Lightbox gallery modal - arrows only, no thumbnails
-function Gallery({ cabin, onClose }) {
+function Gallery({ cabin, onClose }: { cabin:any; onClose:()=>void }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     const fn = (e) => { if (e.key === "Escape") onClose(); if (e.key === "ArrowRight") setIdx(i => (i+1) % cabin.gallery.length); if (e.key === "ArrowLeft") setIdx(i => (i-1+cabin.gallery.length) % cabin.gallery.length); };
@@ -280,7 +280,7 @@ function Gallery({ cabin, onClose }) {
   );
 }
 
-function CabinCard({ cabin, index, onOpenGallery }) {
+function CabinCard({ cabin, index, onOpenGallery }: { cabin:any; index:number; onOpenGallery:(c:any)=>void }) {
   const [ref, inView] = useInView();
   const [hovered, setHovered] = useState(false);
   return (
@@ -332,7 +332,7 @@ function CabinCard({ cabin, index, onOpenGallery }) {
   );
 }
 
-function MapSection() {
+function MapSection(): JSX.Element {
   const [selectedSpot, setSelectedSpot] = useState(mapHotspots[0]);
   const [fading, setFading] = useState(false);
 
@@ -371,7 +371,7 @@ function MapSection() {
               <img src="https://images.weserv.nl/?url=presidentialmountainresort.com/wp-content/uploads/2025/10/PMR-Map-1920.jpg" alt="PMR Resort Map"
                 style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
               />
-              {mapHotspots.map(spot => {
+              {mapHotspots.map((spot: any) => {
                 const isSel = spot.label === selectedSpot.label;
                 const isAmenity = spot.type === "amenity";
                 const isPool = spot.label === "Swimming Pool";
@@ -401,7 +401,7 @@ function MapSection() {
         {/* Cabin + amenity list */}
         <div style={{ display:"flex", flexWrap:"wrap", gap:8, alignContent:"flex-start" }}>
           <p style={{ width:"100%", fontSize:10, fontWeight:700, color:"#7dcfa0", letterSpacing:"0.15em", textTransform:"uppercase", margin:"0 0 4px" }}>Cabins</p>
-          {mapHotspots.filter(s=>s.type==="cabin").map(spot => {
+          {mapHotspots.filter((s:any)=>s.type==="cabin").map((spot: any) => {
             const isSel = spot.label === selectedSpot.label;
             const cabin = cabins.find(c => c.name === spot.cabinName);
             return (
@@ -423,7 +423,7 @@ function MapSection() {
             );
           })}
           <p style={{ width:"100%", fontSize:10, fontWeight:700, color:"#7dcfa0", letterSpacing:"0.15em", textTransform:"uppercase", margin:"12px 0 4px" }}>Amenities</p>
-          {mapHotspots.filter(s=>s.type==="amenity").map(spot => {
+          {mapHotspots.filter((s:any)=>s.type==="amenity").map((spot: any) => {
             const isSel = spot.label === selectedSpot.label;
             return (
               <button key={spot.label} onClick={() => handleSelect(spot)} style={{
@@ -495,7 +495,7 @@ function MapSection() {
   );
 }
 
-function FaqCard({ category, icon, items }) {
+function FaqCard({ category, icon, items }: { category:string; icon:string; items:{q:string;a:string}[] }) {
   const [openIdx, setOpenIdx] = useState(null);
   return (
     <div style={{ background:"#fff", borderRadius:"1.5rem", border:"1px solid #ddeedd", overflow:"hidden" }}>
@@ -662,7 +662,7 @@ export default function PMRCabinsRedesign() {
               <p style={{ margin:"0 0 8px", fontSize:11, fontWeight:700, letterSpacing:"0.2em", color:"#1b4d2e", textTransform:"uppercase" }}>Everything you need</p>
               <h2 style={{ margin:"0 0 20px", fontSize:"clamp(1.6rem,2.5vw,2.1rem)", fontWeight:900, letterSpacing:"-0.03em", lineHeight:1.1 }}>Everything your family needs for a great vacation</h2>
               <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-                {kosherInfo.map(({ icon, title, body }) => (
+                {kosherInfo.map(({ icon, title, body }: { icon:string; title:string; body:string }) => (
                   <div key={title} style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
                     <div style={{ width:38, height:38, borderRadius:11, background:"#1b4d2e", flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{icon}</div>
                     <div>
@@ -776,7 +776,7 @@ export default function PMRCabinsRedesign() {
                   { q:"Grill rental", a:"$35/night. All activities subject to availability." },
                 ]
               },
-            ].map(({ category, icon, items }) => (
+            ].map(({ category, icon, items }: { category:string; icon:string; items:{q:string;a:string}[] }) => (
               <FaqCard key={category} category={category} icon={icon} items={items} />
             ))}
           </div>
@@ -789,5 +789,5 @@ export default function PMRCabinsRedesign() {
         <p style={{ margin:0 }}><a href="https://presidentialmountainresort.com" target="_blank" rel="noreferrer" style={{ color:"#1b4d2e" }}>presidentialmountainresort.com</a> · Family-friendly · Summer 2025</p>
       </footer>
     </div>
-  ); 
+  );
 }
