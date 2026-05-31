@@ -544,8 +544,8 @@ function HeroCard() {
   useEffect(() => {
     const t = setInterval(() => {
       setFade(false);
-      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 700);
-    }, 6000);
+      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 1200);
+    }, 7000);
     return () => clearInterval(t);
   }, []);
   const photo = CARD_PHOTOS[idx];
@@ -553,7 +553,7 @@ function HeroCard() {
     <div style={{ borderRadius:"2rem", overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.38)" }}>
       <div style={{ position:"relative", height:320, background:"#b8ccb0" }}>
         <img src={photo.src} alt={photo.caption}
-          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 0.7s ease" }} />
+          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 1.2s ease" }} />
         {/* Dot indicators */}
         <div style={{ position:"absolute", bottom:10, left:"50%", transform:"translateX(-50%)", display:"flex", gap:5 }}>
           {CARD_PHOTOS.map((_: any, i: number) => (
@@ -562,7 +562,7 @@ function HeroCard() {
           ))}
         </div>
       </div>
-      <div style={{ background:"rgba(255,255,255,0.97)", padding:"16px 20px", opacity:fade?1:0, transition:"opacity 0.7s ease" }}>
+      <div style={{ background:"rgba(255,255,255,0.97)", padding:"16px 20px", opacity:fade?1:0, transition:"opacity 1.2s ease" }}>
         <p style={{ margin:"0 0 3px", fontSize:13, fontWeight:800, color:"#1b4d2e" }}>{photo.caption}</p>
         <p style={{ margin:0, fontSize:12, color:"#6a8060" }}>{photo.sub}</p>
       </div>
