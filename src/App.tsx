@@ -527,15 +527,15 @@ function FaqCard({ category, icon, items }: { category:string; icon:string; item
 }
 
 const CARD_PHOTOS = [
-  "/giftshop2.jpg",
-  "/boats.jpg",
-  "/bridge.jpg",
-  "/playground.jpg",
-  "/zoo.jpg",
-  "/shul.jpg",
-  "/shul2.jpg",
-  "/pboats.jpg",
-  "/giftshop.jpg",
+  { src:"/giftshop2.jpg",   caption:"Welcome to PMR", sub:"Check-in, gift shop & main lodge" },
+  { src:"/boats.jpg",       caption:"Boating on the Lake", sub:"Kayaks, paddle boats & rowboats available" },
+  { src:"/bridge.jpg",      caption:"Scenic Wooden Bridges", sub:"Connecting the resort over the lake" },
+  { src:"/playground.jpg",  caption:"Beautiful Playgrounds", sub:"Multiple play areas for all ages" },
+  { src:"/zoo.jpg",         caption:"Petting Zoo — Free!", sub:"Sheep, goats, chickens & more" },
+  { src:"/shul.jpg",        caption:"On-Site Shul", sub:"Daily minyanim all summer long" },
+  { src:"/shul2.jpg",       caption:"Beit Midrash", sub:"Fully stocked with seforim" },
+  { src:"/pboats.jpg",      caption:"Private Lake", sub:"Peaceful water views from your cabin" },
+  { src:"/giftshop.jpg",    caption:"Resort Grounds", sub:"37 log cabins in the White Mountains" },
 ];
 
 function HeroCard() {
@@ -544,23 +544,27 @@ function HeroCard() {
   useEffect(() => {
     const t = setInterval(() => {
       setFade(false);
-      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 500);
-    }, 3000);
+      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 700);
+    }, 6000);
     return () => clearInterval(t);
   }, []);
+  const photo = CARD_PHOTOS[idx];
   return (
     <div style={{ borderRadius:"2rem", overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.38)" }}>
       <div style={{ position:"relative", height:320, background:"#b8ccb0" }}>
-        <img src={CARD_PHOTOS[idx]} alt="PMR Resort"
-          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 0.5s ease" }} />
-      </div>
-      <div style={{ background:"rgba(255,255,255,0.97)", padding:"18px 20px" }}>
-        <p style={{ margin:"0 0 4px", fontSize:10, fontWeight:700, color:"#1b4d2e", letterSpacing:"0.14em", textTransform:"uppercase" }}>On-site summer essentials</p>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:8 }}>
-          {["Shul on premises","Mikvah","Heimish food","Lake activities"].map((tag: string) => (
-            <span key={tag} style={{ background:"#e8f5e9", color:"#1b5e20", fontSize:12, fontWeight:700, padding:"4px 12px", borderRadius:20, border:"1px solid rgba(27,94,32,0.18)" }}>{tag}</span>
+        <img src={photo.src} alt={photo.caption}
+          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 0.7s ease" }} />
+        {/* Dot indicators */}
+        <div style={{ position:"absolute", bottom:10, left:"50%", transform:"translateX(-50%)", display:"flex", gap:5 }}>
+          {CARD_PHOTOS.map((_: any, i: number) => (
+            <button key={i} onClick={() => { setFade(false); setTimeout(() => { setIdx(i); setFade(true); }, 300); }}
+              style={{ width: i===idx?16:6, height:6, borderRadius:3, background: i===idx?"#fff":"rgba(255,255,255,0.45)", border:"none", cursor:"pointer", transition:"all 0.3s", padding:0 }} />
           ))}
         </div>
+      </div>
+      <div style={{ background:"rgba(255,255,255,0.97)", padding:"16px 20px", opacity:fade?1:0, transition:"opacity 0.7s ease" }}>
+        <p style={{ margin:"0 0 3px", fontSize:13, fontWeight:800, color:"#1b4d2e" }}>{photo.caption}</p>
+        <p style={{ margin:0, fontSize:12, color:"#6a8060" }}>{photo.sub}</p>
       </div>
     </div>
   );
