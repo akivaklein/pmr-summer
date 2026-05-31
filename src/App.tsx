@@ -789,5 +789,5 @@ export default function PMRCabinsRedesign() {
         <p style={{ margin:0 }}><a href="https://presidentialmountainresort.com" target="_blank" rel="noreferrer" style={{ color:"#1b4d2e" }}>presidentialmountainresort.com</a> · Family-friendly · Summer 2025</p>
       </footer>
     </div>
-  );
+  ); 
 }
