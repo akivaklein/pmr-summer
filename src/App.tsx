@@ -208,20 +208,21 @@ const kosherInfo = [
 
 // Map hotspots — cabins + playground
 const mapHotspots = [
-  { label:"Rosewood Cottage",  shortLabel:"RC", type:"cabin",      cabinName:"Rosewood Cottage",            x:91, y:57, zoomOrigin:"91% 57%" },
-  { label:"Rosewood Villas",   shortLabel:"RV", type:"cabin",      cabinName:"Rosewood Villa Cabins",       x:84, y:42, zoomOrigin:"84% 42%" },
-  { label:"Rosewood Villa 16", shortLabel:"RV", type:"cabin",      cabinName:"Rosewood Villa Cabins",       x:91, y:42, zoomOrigin:"91% 42%" },
-  { label:"Rosewood Premier",  shortLabel:"RP", type:"cabin",      cabinName:"Rosewood Premier Cabins",     x:76, y:28, zoomOrigin:"76% 28%" },
-  { label:"Chestnut Cabins",   shortLabel:"CH", type:"cabin",      cabinName:"Chestnut Studio Cabins",      x:63, y:52, zoomOrigin:"63% 52%" },
-  { label:"Pine Cabins",       shortLabel:"PN", type:"cabin",      cabinName:"Pine Cabins",                 x:31, y:62, zoomOrigin:"31% 62%" },
-  { label:"Oak Premier",       shortLabel:"OK", type:"cabin",      cabinName:"Oak Premier Cabin",           x:24, y:46, zoomOrigin:"24% 46%" },
-  { label:"Cedar Lodge",       shortLabel:"CD", type:"cabin",      cabinName:"Cedar Select Townhomes",      x:72, y:40, zoomOrigin:"72% 40%" },
-  { label:"Cherry Lodge",      shortLabel:"CL", type:"cabin",      cabinName:"Cherry Lodge Rooms",          x:57, y:27, zoomOrigin:"57% 27%" },
-  { label:"North Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Large playground with slides and climbing structures.", image:"/playground.jpg", x:44, y:48, zoomOrigin:"44% 48%" },
-  { label:"South Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Big playground with slides, climbing and spinning toys.", image:"/playground.jpg", x:75, y:68, zoomOrigin:"75% 68%" },
-  { label:"Boat Dock",         shortLabel:"⛵", type:"amenity",    icon:"⛵", desc:"Private lake with wooden bridges, boat dock, kayaks and paddle boats.", image:"/boats.jpg", x:38, y:78, zoomOrigin:"38% 78%" },
-  { label:"Swimming Pool",     shortLabel:"D",  type:"amenity",    icon:"D",  desc:"Heated pool with separate men's and women's swim hours.", image:"/pool.png", x:54, y:30, zoomOrigin:"54% 30%" },
-  { label:"Viewing Zoo",       shortLabel:"🐑", type:"amenity",    icon:"🐑", desc:"Free petting zoo with sheep, goats, chickens and more — kids love feeding the animals!", image:"/zoo.jpg", x:95, y:55, zoomOrigin:"95% 55%" },
+  { label:"Rosewood Cottage",  shortLabel:"RC", type:"cabin",      cabinName:"Rosewood Cottage",            x:91, y:62, zoomOrigin:"91% 62%" },
+  { label:"Rosewood Villas",   shortLabel:"RV", type:"cabin",      cabinName:"Rosewood Villa Cabins",       x:67, y:52, zoomOrigin:"67% 52%" },
+  { label:"Rosewood Villa 16", shortLabel:"RV", type:"cabin",      cabinName:"Rosewood Villa Cabins",       x:70, y:44, zoomOrigin:"70% 44%" },
+  { label:"Rosewood Premier",  shortLabel:"RP", type:"cabin",      cabinName:"Rosewood Premier Cabins",     x:80, y:38, zoomOrigin:"80% 38%" },
+  { label:"Chestnut Cabins",   shortLabel:"CH", type:"cabin",      cabinName:"Chestnut Studio Cabins",      x:64, y:68, zoomOrigin:"64% 68%" },
+  { label:"Pine Cabins",       shortLabel:"PN", type:"cabin",      cabinName:"Pine Cabins",                 x:33, y:72, zoomOrigin:"33% 72%" },
+  { label:"Oak Premier",       shortLabel:"OK", type:"cabin",      cabinName:"Oak Premier Cabin",           x:22, y:56, zoomOrigin:"22% 56%" },
+  { label:"Cedar Lodge",       shortLabel:"CD", type:"cabin",      cabinName:"Cedar Select Townhomes",      x:80, y:52, zoomOrigin:"80% 52%" },
+  { label:"Cherry Lodge",      shortLabel:"CL", type:"cabin",      cabinName:"Cherry Lodge Rooms",          x:64, y:22, zoomOrigin:"64% 22%" },
+  { label:"North Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Large playground with slides and climbing structures.", image:"/playground.jpg", x:95, y:36, zoomOrigin:"95% 36%" },
+  { label:"South Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Big playground with slides, climbing and spinning toys.", image:"/playground.jpg", x:72, y:76, zoomOrigin:"72% 76%" },
+  { label:"Boat Dock",         shortLabel:"⛵", type:"amenity",    icon:"⛵", desc:"Private lake with wooden bridges, boat dock, kayaks and paddle boats.", image:"/boats.jpg", x:38, y:82, zoomOrigin:"38% 82%" },
+  { label:"Swimming Pool",     shortLabel:"D",  type:"amenity",    icon:"D",  desc:"Heated pool with separate men's and women's swim hours.", image:"/pool.png", x:57, y:24, zoomOrigin:"57% 24%" },
+  { label:"Gazebo on the Lake", shortLabel:"M", type:"amenity",    icon:"🏡", desc:"Beautiful gazebo overlooking the lake — perfect for relaxing summer evenings.", image:"/view.png", x:28, y:78, zoomOrigin:"28% 78%" },
+  { label:"Viewing Zoo",       shortLabel:"🐑", type:"amenity",    icon:"🐑", desc:"Free petting zoo with sheep, goats, chickens and more!", image:"/zoo.jpg", x:94, y:68, zoomOrigin:"94% 68%" },
   { label:"Shul",              shortLabel:"🕍", type:"amenity",    icon:"🕍", desc:"On-site shul with daily minyanim throughout the summer.", image:"/shul.jpg", x:65, y:38, zoomOrigin:"65% 38%" },
 ];
 
@@ -738,7 +739,7 @@ export default function PMRCabinsRedesign() {
                 onMouseLeave={e=>e.currentTarget.style.color="#4a6a4a"}
               >{label}</a>
             ))}
-            <a href="tel:6032532222" style={{ background:"#1b4d2e", color:"#d4e8a0", borderRadius:24, padding:"9px 20px", fontSize:13, fontWeight:700, textDecoration:"none" }}>Call to Book</a>
+            <a href="tel:6033076764" style={{ background:"#1b4d2e", color:"#d4e8a0", borderRadius:24, padding:"9px 20px", fontSize:13, fontWeight:700, textDecoration:"none" }}>📞 (603) 307-6764</a>
           </nav>
         </div>
       </header>
@@ -909,7 +910,7 @@ export default function PMRCabinsRedesign() {
 
       <footer id="kosher" style={{ borderTop:"1px solid #ddeedd", padding:"32px 24px", textAlign:"center", color:"#6a8060", fontSize:13, background:"#eaf2e4" }}>
         <p style={{ margin:"0 0 6px", fontWeight:700, color:"#1c2a1a", fontSize:15 }}>Presidential Mountain Resort</p>
-        <p style={{ margin:"0 0 4px" }}>1108 Main Street · Bethlehem, NH 03574 · <a href="tel:6032532222" style={{ color:"#1b4d2e", textDecoration:"none" }}>(603) 253-2222</a></p>
+        <p style={{ margin:"0 0 4px" }}>1108 Main Street · Bethlehem, NH 03574 · <a href="tel:6033076764" style={{ color:"#1b4d2e", textDecoration:"none" }}>(603) 307-6764</a></p>
         <p style={{ margin:0 }}><a href="https://presidentialmountainresort.com" target="_blank" rel="noreferrer" style={{ color:"#1b4d2e" }}>presidentialmountainresort.com</a> · Family-friendly · Summer 2025</p>
       </footer>
     </div>
