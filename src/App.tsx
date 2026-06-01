@@ -219,8 +219,8 @@ const mapHotspots = [
   { label:"Cherry Lodge",      shortLabel:"CL", type:"cabin",      cabinName:"Cherry Lodge Rooms",          x:57, y:27, zoomOrigin:"57% 27%" },
   { label:"North Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Large playground with slides and climbing structures.", image:"/playground.jpg", x:44, y:48, zoomOrigin:"44% 48%" },
   { label:"South Playground",  shortLabel:"🛝", type:"amenity",    icon:"🛝", desc:"Big playground with slides, climbing and spinning toys.", image:"/playground.jpg", x:75, y:68, zoomOrigin:"75% 68%" },
-  { label:"Boat Dock",         shortLabel:"⛵", type:"amenity",    icon:"⛵", desc:"Private lake with wooden bridges, boat dock, kayaks and paddle boats.", image:"/bridge.jpg", x:38, y:78, zoomOrigin:"38% 78%" },
-  { label:"Swimming Pool",     shortLabel:"D",  type:"amenity",    icon:"D",  desc:"Pool with separate men's and women's swim hours.", x:54, y:30, zoomOrigin:"54% 30%" },
+  { label:"Boat Dock",         shortLabel:"⛵", type:"amenity",    icon:"⛵", desc:"Private lake with wooden bridges, boat dock, kayaks and paddle boats.", image:"/boats.jpg", x:38, y:78, zoomOrigin:"38% 78%" },
+  { label:"Swimming Pool",     shortLabel:"D",  type:"amenity",    icon:"D",  desc:"Heated pool with separate men's and women's swim hours.", image:"/pool.png", x:54, y:30, zoomOrigin:"54% 30%" },
   { label:"Viewing Zoo",       shortLabel:"🐑", type:"amenity",    icon:"🐑", desc:"Free petting zoo with sheep, goats, chickens and more — kids love feeding the animals!", image:"/zoo.jpg", x:95, y:55, zoomOrigin:"95% 55%" },
   { label:"Shul",              shortLabel:"🕍", type:"amenity",    icon:"🕍", desc:"On-site shul with daily minyanim throughout the summer.", image:"/shul.jpg", x:65, y:38, zoomOrigin:"65% 38%" },
 ];
@@ -335,6 +335,7 @@ function CabinCard({ cabin, index, onOpenGallery }: { cabin:any; index:number; o
 function MapSection(): JSX.Element {
   const [selectedSpot, setSelectedSpot] = useState(mapHotspots[0]);
   const [fading, setFading] = useState(false);
+  const [hoveredSpot, setHoveredSpot] = useState<any>(null);
 
   const handleSelect = (spot) => {
     if (spot.label === selectedSpot.label) return;
@@ -344,6 +345,10 @@ function MapSection(): JSX.Element {
 
   const selectedCabin = selectedSpot.type === "cabin"
     ? cabins.find(c => c.name === selectedSpot.cabinName)
+    : null;
+
+  const hoverCabin = hoveredSpot?.type === "cabin"
+    ? cabins.find(c => c.name === hoveredSpot.cabinName)
     : null;
 
   return (
@@ -373,20 +378,51 @@ function MapSection(): JSX.Element {
               />
               {mapHotspots.map((spot: any) => {
                 const isSel = spot.label === selectedSpot.label;
+                const isHov = hoveredSpot?.label === spot.label;
                 const isAmenity = spot.type === "amenity";
                 const isPool = spot.label === "Swimming Pool";
                 const size = isSel ? 24 : isAmenity ? (isPool ? 17 : 20) : 17;
                 return (
-                  <button key={spot.label} onClick={() => handleSelect(spot)} title={spot.label} aria-label={`Show ${spot.label}`} style={{
-                    position:"absolute", left:`${spot.x}%`, top:`${spot.y}%`, transform:"translate(-50%,-50%)",
-                    width:size, height:size, borderRadius:"50%",
-                    border:isSel?"2px solid #fff":"1px solid rgba(255,255,255,0.7)",
-                    background:isSel?"#c8a020":isAmenity?"rgba(30,80,50,0.95)":"rgba(13,43,24,0.9)",
-                    color:isSel?"#1c1400":"#fff", fontSize:isPool?6:isAmenity?9:6, fontWeight:900,
-                    cursor:"pointer", boxShadow:isSel?"0 0 0 4px rgba(200,160,32,0.4)":"0 1px 4px rgba(0,0,0,0.6)",
-                    transition:"all 0.25s ease", zIndex:isSel?10:5, display:"flex", alignItems:"center", justifyContent:"center",
-                    lineHeight:1,
-                  }}>{isAmenity ? spot.icon : spot.shortLabel}</button>
+                  <div key={spot.label} style={{ position:"absolute", left:`${spot.x}%`, top:`${spot.y}%`, transform:"translate(-50%,-50%)", zIndex:isSel?10:isHov?8:5 }}>
+                    {/* Photo popup on hover */}
+                    {isHov && (hoveredSpot.image || hoverCabin?.image) && (
+                      <div style={{
+                        position:"absolute", bottom:"120%", left:"50%", transform:"translateX(-50%)",
+                        width:160, borderRadius:12, overflow:"hidden",
+                        boxShadow:"0 8px 32px rgba(0,0,0,0.5)",
+                        border:"2px solid #fff", zIndex:20,
+                        animation:"fadeIn 0.2s ease",
+                      }}>
+                        <img src={hoveredSpot.image || hoverCabin?.image} alt={spot.label}
+                          style={{ width:"100%", height:100, objectFit:"cover", display:"block" }} />
+                        <div style={{ background:"rgba(0,0,0,0.85)", padding:"6px 8px" }}>
+                          <p style={{ margin:0, fontSize:11, fontWeight:700, color:"#fff" }}>{spot.label}</p>
+                        </div>
+                        {/* Arrow pointing down */}
+                        <div style={{ position:"absolute", bottom:-8, left:"50%", transform:"translateX(-50%)", width:0, height:0, borderLeft:"8px solid transparent", borderRight:"8px solid transparent", borderTop:"8px solid rgba(0,0,0,0.85)" }} />
+                      </div>
+                    )}
+                    <button
+                      onClick={() => handleSelect(spot)}
+                      onMouseEnter={() => setHoveredSpot(spot)}
+                      onMouseLeave={() => setHoveredSpot(null)}
+                      title={spot.label} aria-label={`Show ${spot.label}`}
+                      style={{
+                        width: isHov && !isSel ? size * 1.4 : size,
+                        height: isHov && !isSel ? size * 1.4 : size,
+                        borderRadius:"50%",
+                        border:isSel?"2px solid #fff":isHov?"2px solid #fff":"1px solid rgba(255,255,255,0.7)",
+                        background:isSel?"#c8a020":isHov?"#e8b824":isAmenity?"rgba(30,80,50,0.95)":"rgba(13,43,24,0.9)",
+                        color:isSel||isHov?"#1c1400":"#fff",
+                        fontSize:isPool?6:isAmenity?9:6, fontWeight:900,
+                        cursor:"pointer",
+                        boxShadow:isSel?"0 0 0 4px rgba(200,160,32,0.4)":isHov?"0 0 0 4px rgba(200,160,32,0.3), 0 4px 12px rgba(0,0,0,0.4)":"0 1px 4px rgba(0,0,0,0.6)",
+                        transition:"all 0.2s ease",
+                        display:"flex", alignItems:"center", justifyContent:"center",
+                        lineHeight:1,
+                      }}
+                    >{isAmenity ? spot.icon : spot.shortLabel}</button>
+                  </div>
                 );
               })}
             </div>
@@ -528,43 +564,60 @@ function FaqCard({ category, icon, items }: { category:string; icon:string; item
 
 const CARD_PHOTOS = [
   { src:"/giftshop2.jpg",   caption:"Welcome to PMR", sub:"Check-in, gift shop & main lodge" },
-  { src:"/boats.jpg",       caption:"Boating on the Lake", sub:"Kayaks, paddle boats & rowboats available" },
-  { src:"/bridge.jpg",      caption:"Scenic Wooden Bridges", sub:"Connecting the resort over the lake" },
   { src:"/playground.jpg",  caption:"Beautiful Playgrounds", sub:"Multiple play areas for all ages" },
+  { src:"/boats.jpg",       caption:"Boating on the Lake", sub:"Kayaks, paddle boats & rowboats available" },
   { src:"/zoo.jpg",         caption:"Petting Zoo — Free!", sub:"Sheep, goats, chickens & more" },
-  { src:"/shul.jpg",        caption:"On-Site Shul", sub:"Daily minyanim all summer long" },
-  { src:"/shul2.jpg",       caption:"Beit Midrash", sub:"Fully stocked with seforim" },
-  { src:"/pboats.jpg",      caption:"Private Lake", sub:"Peaceful water views from your cabin" },
+  { src:"/bridge.jpg",      caption:"Scenic Wooden Bridges", sub:"Connecting the resort over the lake" },
+  { src:"/pool.png",        caption:"Heated Pool", sub:"Separate hours for men and women" },
+  { src:"/shul.jpg",        caption:"בית המדרש", sub:"Daily minyanim all summer long" },
+  { src:"/view.png",        caption:"Mountain Views", sub:"Stunning White Mountains scenery" },
+  { src:"/shul2.jpg",       caption:"בית המדרש", sub:"Fully stocked with seforim" },
   { src:"/giftshop.jpg",    caption:"Resort Grounds", sub:"37 log cabins in the White Mountains" },
 ];
 
 function HeroCard() {
   const [idx, setIdx] = useState(0);
-  const [fade, setFade] = useState(true);
+  const [nextIdx, setNextIdx] = useState(1);
+  const [fade, setFade] = useState(false);
+  const [captionIdx, setCaptionIdx] = useState(0);
+
   useEffect(() => {
     const t = setInterval(() => {
-      setFade(false);
-      setTimeout(() => { setIdx(i => (i+1) % CARD_PHOTOS.length); setFade(true); }, 1200);
-    }, 7000);
+      const next = (idx + 1) % CARD_PHOTOS.length;
+      setNextIdx(next);
+      setCaptionIdx(next);
+      setFade(true);
+      setTimeout(() => {
+        setIdx(next);
+        setFade(false);
+      }, 1000);
+    }, 4000);
     return () => clearInterval(t);
-  }, []);
-  const photo = CARD_PHOTOS[idx];
+  }, [idx]);
+
+  const current = CARD_PHOTOS[captionIdx];
+  const next = CARD_PHOTOS[nextIdx];
+
   return (
     <div style={{ borderRadius:"2rem", overflow:"hidden", boxShadow:"0 24px 64px rgba(0,0,0,0.38)" }}>
       <div style={{ position:"relative", height:320, background:"#b8ccb0" }}>
-        <img src={photo.src} alt={photo.caption}
-          style={{ width:"100%", height:"100%", objectFit:"cover", display:"block", opacity:fade?1:0, transition:"opacity 1.2s ease" }} />
+        {/* Current photo */}
+        <img src={current.src} alt={current.caption}
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", opacity: fade?0:1, transition:"opacity 1s ease" }} />
+        {/* Next photo — fades in underneath */}
+        <img src={next.src} alt={next.caption}
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", opacity: fade?1:0, transition:"opacity 1s ease" }} />
         {/* Dot indicators */}
-        <div style={{ position:"absolute", bottom:10, left:"50%", transform:"translateX(-50%)", display:"flex", gap:5 }}>
+        <div style={{ position:"absolute", bottom:10, left:"50%", transform:"translateX(-50%)", display:"flex", gap:5, zIndex:10 }}>
           {CARD_PHOTOS.map((_: any, i: number) => (
-            <button key={i} onClick={() => { setFade(false); setTimeout(() => { setIdx(i); setFade(true); }, 300); }}
+            <button key={i} onClick={() => { setNextIdx(i); setFade(true); setTimeout(() => { setIdx(i); setFade(false); }, 1000); }}
               style={{ width: i===idx?16:6, height:6, borderRadius:3, background: i===idx?"#fff":"rgba(255,255,255,0.45)", border:"none", cursor:"pointer", transition:"all 0.3s", padding:0 }} />
           ))}
         </div>
       </div>
-      <div style={{ background:"rgba(255,255,255,0.97)", padding:"16px 20px", opacity:fade?1:0, transition:"opacity 1.2s ease" }}>
-        <p style={{ margin:"0 0 3px", fontSize:13, fontWeight:800, color:"#1b4d2e" }}>{photo.caption}</p>
-        <p style={{ margin:0, fontSize:12, color:"#6a8060" }}>{photo.sub}</p>
+      <div style={{ background:"rgba(255,255,255,0.97)", padding:"16px 20px" }}>
+        <p style={{ margin:"0 0 3px", fontSize:13, fontWeight:800, color:"#1b4d2e" }}>{current.caption}</p>
+        <p style={{ margin:0, fontSize:12, color:"#6a8060" }}>{current.sub}</p>
       </div>
     </div>
   );
@@ -572,31 +625,41 @@ function HeroCard() {
 const HERO_PHOTOS = [
   "/giftshop2.jpg",
   P("2025/02/PMR-RosewoodVilla17-1400x934.jpg"),
-  "/boats.jpg",
-  P("2025/02/GH-PMR-33-1-1120x1400.jpg"),
   "/bridge.jpg",
+  P("2025/02/GH-PMR-33-1-1120x1400.jpg"),
+  "/boats.jpg",
   P("2025/02/PMR-OakPremiereCabin.jpg"),
+  "/view.png",
 ];
 
 function HeroSection({ heroVisible }: { heroVisible: boolean }) {
   const [heroIdx, setHeroIdx] = useState(0);
-  const [fade, setFade] = useState(true);
+  const [nextHeroIdx, setNextHeroIdx] = useState(1);
+  const [heroFade, setHeroFade] = useState(false);
+
   useEffect(() => {
     const t = setInterval(() => {
-      setFade(false);
-      setTimeout(() => { setHeroIdx(i => (i+1) % HERO_PHOTOS.length); setFade(true); }, 600);
-    }, 4000);
+      const next = (heroIdx + 1) % HERO_PHOTOS.length;
+      setNextHeroIdx(next);
+      setHeroFade(true);
+      setTimeout(() => { setHeroIdx(next); setHeroFade(false); }, 1000);
+    }, 7000);
     return () => clearInterval(t);
-  }, []);
+  }, [heroIdx]);
+
   return (
     <section style={{ position:"relative", overflow:"hidden", minHeight:580, display:"flex", alignItems:"center" }}>
       <div style={{ position:"absolute", inset:0 }}>
+        {/* Current background */}
         <img src={HERO_PHOTOS[heroIdx]} alt="Presidential Mountain Resort"
-          style={{ width:"100%", height:"100%", objectFit:"cover", opacity: fade?1:0, transition:"opacity 0.6s ease" }} />
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", opacity: heroFade?0:1, transition:"opacity 1s ease" }} />
+        {/* Next background — crossfades in */}
+        <img src={HERO_PHOTOS[nextHeroIdx]} alt="Presidential Mountain Resort"
+          style={{ position:"absolute", inset:0, width:"100%", height:"100%", objectFit:"cover", opacity: heroFade?1:0, transition:"opacity 1s ease" }} />
         <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(8,35,15,0.82) 0%,rgba(8,35,15,0.4) 55%,rgba(8,35,15,0.15) 100%)" }} />
-        <div style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", display:"flex", gap:6 }}>
+        <div style={{ position:"absolute", bottom:16, left:"50%", transform:"translateX(-50%)", display:"flex", gap:6, zIndex:2 }}>
           {HERO_PHOTOS.map((_: string, i: number) => (
-            <button key={i} onClick={() => { setFade(false); setTimeout(() => { setHeroIdx(i); setFade(true); }, 300); }}
+            <button key={i} onClick={() => { setNextHeroIdx(i); setHeroFade(true); setTimeout(() => { setHeroIdx(i); setHeroFade(false); }, 1000); }}
               style={{ width: i===heroIdx?20:8, height:8, borderRadius:4, background: i===heroIdx?"#fff":"rgba(255,255,255,0.4)", border:"none", cursor:"pointer", transition:"all 0.3s ease", padding:0 }} />
           ))}
         </div>
